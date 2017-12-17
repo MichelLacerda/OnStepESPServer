@@ -33,7 +33,7 @@
  */
  
 #define Product "OnEsp"
-#define Version "1.0a 09 28 17"
+#define Version "1.0a 12 17 17"
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
@@ -247,21 +247,23 @@ Again:
   // switch OnStep Serial1 up to ? baud
   Serial.print(SERIAL_BAUD);
   delay(100);
-  c=0;
-  if (Serial.available()>0) { c=Serial.read(); }
-  if (c=='1') {
-    if (!strcmp(SERIAL_BAUD,":SB0#")) Serial.begin(115200); else
-    if (!strcmp(SERIAL_BAUD,":SB1#")) Serial.begin(57600); else
-    if (!strcmp(SERIAL_BAUD,":SB2#")) Serial.begin(38400); else
-    if (!strcmp(SERIAL_BAUD,":SB3#")) Serial.begin(28800); else
-    if (!strcmp(SERIAL_BAUD,":SB4#")) Serial.begin(19200); else Serial.begin(9600);
-#ifdef SERIAL_SWAP_ON
-    Serial.swap();
-#endif
+  int count=0; c=0;
+  if (Serial.available()>0) { count++; c=Serial.read(); }
+  if ((c=='1') && (count==1)) {
+      HighSpeedComms();
+  #ifdef SERIAL_SWAP_ON
+      Serial.swap();
+  #endif
   } else {
 #ifdef LED_PIN
     digitalWrite(LED_PIN,HIGH);
 #endif
+    // got nothing back, toggle baud rate and try again
+    static byte tb=0;
+    if (tb++%2==0) HighSpeedComms(); else Serial.begin(SERIAL_BAUD_DEFAULT);
+  #ifdef SERIAL_SWAP_ON
+    Serial.swap();
+  #endif
     delay(5000);
     goto Again;
   }
@@ -379,5 +381,13 @@ void loop(void){
 
     } else server.handleClient();
   }
+}
+
+void HighSpeedComms() {
+  if (!strcmp(SERIAL_BAUD,":SB0#")) Serial.begin(115200); else
+  if (!strcmp(SERIAL_BAUD,":SB1#")) Serial.begin(57600); else
+  if (!strcmp(SERIAL_BAUD,":SB2#")) Serial.begin(38400); else
+  if (!strcmp(SERIAL_BAUD,":SB3#")) Serial.begin(28800); else
+  if (!strcmp(SERIAL_BAUD,":SB4#")) Serial.begin(19200); else Serial.begin(9600);
 }
 
