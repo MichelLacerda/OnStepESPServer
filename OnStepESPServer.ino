@@ -248,8 +248,8 @@ Again:
   Serial.print(SERIAL_BAUD);
   delay(100);
   int count=0; c=0;
-  if (Serial.available()>0) { count++; c=Serial.read(); }
-  if ((c=='1') && (count==1)) {
+  if (Serial.available()>0) { count++; if (count==1) c=Serial.read(); }
+  if ((c=='1') && (count>=1)) {
       HighSpeedComms();
   #ifdef SERIAL_SWAP_ON
       Serial.swap();
