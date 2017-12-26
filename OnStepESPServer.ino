@@ -227,7 +227,7 @@ Again:
 #endif
     delay(500);
     Serial.flush();
-    serialRecvFlush();
+    c=serialRecvFlush();
 #ifdef LED_PIN
     digitalWrite(LED_PIN,LOW);
 #endif

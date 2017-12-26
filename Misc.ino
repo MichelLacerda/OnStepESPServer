@@ -103,7 +103,9 @@ boolean readLX200Bytes(char* command,char* recvBuffer,long timeOutMs) {
   }
 }
 
-void serialRecvFlush() {
-  while (Serial.available()>0) Serial.read();
+char serialRecvFlush() {
+  char c=0;
+  while (Serial.available()>0) c=Serial.read();
+  return c;
 }
 
