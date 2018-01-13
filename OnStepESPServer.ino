@@ -76,6 +76,7 @@ unsigned long clientTime = 0;
 
 char writeBuffer[40]="";
 int writeBufferPos=0;
+byte tb=0;
 
 enum Errors {ERR_NONE, ERR_MOTOR_FAULT, ERR_ALT, ERR_LIMIT_SENSE, ERR_DEC, ERR_AZM, ERR_UNDER_POLE, ERR_MERIDIAN, ERR_SYNC};
 Errors lastError = ERR_NONE;
@@ -259,12 +260,15 @@ Again:
     digitalWrite(LED_PIN,HIGH);
 #endif
     // got nothing back, toggle baud rate and try again
-    static byte tb=0;
-    if (tb++%2==0) HighSpeedComms(); else Serial.begin(SERIAL_BAUD_DEFAULT);
+    tb++;
+    if (tb==7) tb=1;
+    if (tb==1) Serial.begin(SERIAL_BAUD_DEFAULT);
+    if (tb==4) HighSpeedComms();
+    
   #ifdef SERIAL_SWAP_ON
     Serial.swap();
   #endif
-    delay(5000);
+    delay(1000);
     goto Again;
   }
 #else
