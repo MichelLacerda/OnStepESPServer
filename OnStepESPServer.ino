@@ -31,9 +31,15 @@
  * ESP8266-01 OnStep control
  *
  */
- 
+
 #define Product "OnEsp"
-#define Version "1.0a 12 17 17"
+#define FirmwareDate          __DATE__
+#define FirmwareTime          __TIME__
+#define FirmwareVersionMajor  "1"
+#define FirmwareVersionMinor  "0"
+#define FirmwareVersionPatch  "b"
+
+#define Version FirmwareVersionMajor "." FirmwareVersionMinor FirmwareVersionPatch
 
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
